@@ -1,0 +1,245 @@
+/**********************************************************
+* Project 3: Zap
+* CS 15
+* README
+* Author: Hannah Jiang (hjiang03)
+*********************************************************/
+
+Compile/run:
+
+    - Compile using
+        make zap
+    - run executable with
+        ./zap [zap/unzap] input_file output_file
+
+
+Program Purpose:
+    
+    This program creates "zaps" (compresses) or "unzaps" (decompresses) files 
+    give to it through inputs. For compressing files, it encodes the text file 
+    into a binary string through multiple functions and then sends the 
+    information into an output file. For decompressing files, it decodes the 
+    text file back into the original ASCII text files. 
+    
+    The purpose of the program is to reduce the size of the file while 
+    preserving its content through using Huffman encoding.
+
+Acknowledgements: 
+
+    CS15 Lecture Slides on Maps
+    C++ Maps
+    GeeksForGeeks Maps
+    
+Files:
+
+    unit_test.h:
+        Where I tested all my functions in phaseOne and HuffmanCoder. It 
+        includes multiple test cases that call each funtion from phaseOne and 
+        HuffmanCoder, passing in test input and making sure that the output 
+        matches the expected results (this was either by asserting or printing 
+        out huffman trees). 
+
+    HuffmanCoder.cpp:
+        Implements the HuffmanCoder class which provides functions for encoding 
+        and decoding files using Huffman coding. These functions include 
+        reading in input files, counting character frequencies, creating 
+        huffman trees, generating binary tables, encoding and decoding files, 
+        and writing output files.
+
+    HuffmanCoder.h:
+        Defines the HuffmanCoder class and its public and private member 
+        functions. Includes the class declaration for all of its public and 
+        private member functions. The public member functions are only the 
+        encoder and decoder. While all the private functions include helper 
+        functions used in the encoding/decoding process, as well as, certain 
+        variables that are used in these functions.
+
+    HuffmanTreeNode.h:
+        Defines the HuffmanTreeNode class. Was already pre-implemented for this 
+        project.
+
+    Makefile: 
+        Runs and compiles the entire program.
+
+    no_nodes.txt:
+        Test file that was used to test the edge case where there were no nodes 
+        in the Huffman tree (meaning the tree was empty)
+    
+    one_node.txt:
+        Test file that was used to test the edge case where there was only one 
+        node in the Huffman tree    
+    
+    empty_file.txt:
+        Test file that was used to test the edge case where there was only one 
+        node and it wasn't a standard char (this specific file tested a newline 
+        char)
+    
+    space_char.txt:
+        Test file that was used to test the edge case where there was only one  
+        node and it wasn't a standard char (this specific file tested the space 
+        char)
+
+    
+Data Structures:
+
+    Binary Tree/Huffman Binary Tree:
+        A binary tree is a data structure that has a maximum of two children
+        for each parent node. It starts with a root node. More specifically,
+        in this project we created a Huffman Binary Tree. A Huffman Binary
+        Tree follows the same "rules" as a Binary Tree, where there is no more
+        than a maximum of two children for each parent node. A Huffman Binary
+        Tree is built using the Huffman coding algorithm which is a lossless
+        data compression algorithm that assigns variable-length codes to
+        characters based on the frequency of their occurence in the input data.
+        For this project, we built functions that created a Huffman tree using
+        frequencies through reading a file. This made it extremely efficient
+        for the program to convert it into binary code since it was
+        variable-length codes for each character. This is especially useful
+        when compressing files, but wanting to keep their contents even when
+        they are compressed. Unlike regular encoding of files which usually
+        use 8 bits per ASCII letter, Huffman coding uses considerably less
+        because not each character will us the same amount of bits. 
+
+    Maps:
+        The map stores key-value pairs. It allows for fast searching of
+        elements using their key values. The map can delete elements,
+        insert, access elements using their keys, or iterate over the map. It
+        was useful for my implementation of counting character frequencies
+        because maps are key-value pairs, I could store a char as the key and
+        the int as the value. This made it easy for when I needed to create a
+        HuffmanTreeNode for each key because I could easily access both the key
+        and the value. The second implementation I used a map for was for
+        storing the char and a string. The first part of the map held the
+        character and the string held its binary string. This map was
+        particularly useful because when I actually needed to encode the entire
+        ASCII text into binary all I had to do was iterate over the map to
+        match up the char. Once I found the char in the map, I could easily
+        pull the second binary string and string it along into a binary text
+        for the zapping of a file.
+
+    Priority Queue:
+        A priority queue is a queue that stores based on priority, by this I
+        mean that certain elements are inserted into this queue by priority.
+        So certain elements have higher priority while others have lower
+        priority. Through this, higher priority elements are stored at the
+        beginning of the queue, while lower priority elements are stores at the
+        end of the queue (or vice versa). A priority queue was useful for
+        creating the Huffman tree because the priority queue that I used stored
+        the values from low->high frequency. This made it easy when creating
+        the Huffman tree because I didn't have to search for the two lowest
+        nodes, I simply had to store the top two values in a HuffmanTreeNode,
+        pop them off the queue and then create a parent node connecting the
+        two nodes together. This was easy for creating a Huffman tree that was
+        consistent with the Huffman encoding.
+
+    Huffman Encoding Algorithm:
+        One of the biggest algorithms used in this project was Huffman
+        encoding. Huffman encoding is particularly useful for when needing to
+        compress large data files efficiently. It is a lossless data
+        compression algorithm. Because it is built using a binary tree by
+        frequency it allows the program to encode using less bits. Regular
+        encoding of ASCII letters (without huffman encoding) uses 8 bits per
+        letter, however, huffman coding uses less because it bases it off of
+        frequency of letters. For example, the letter 'a' may appear 10000
+        times while 'z' may appear 1. So, why would we use the same amount of
+        bits for those letters when we could use a considerably more efficent
+        way to encode it? This is why huffman coding is useful. Instead of the
+        letter 'a' taking 80000 bits, it may only take 10000. It basically
+        makes shorter and simplier binary codes; instead of the regular ASCII 8
+        bits.
+
+    Assigning Binary Codes: 
+        This algorithm was used in the project for the encoding of the text. It
+        allowed me to use the built huffman tree and traverse through it and
+        assign binary codes to each character based on it's position in the
+        Huffman tree. Characters that were farther away (less frequent in the
+        text) had longer binary codes, while characters that were closer (more
+        frequent in the text) had shorter binary codes. This allowed for the
+        huffman encoding algorithm to work (since it bases it off of
+        frequency). I stored these binary codes in a map which allowed easy
+        access for when I read in the file again and had to write it into
+        binary.
+    
+    Decoding the Data: 
+        Another algorithm used in the project was the decoding of data. This
+        involved converting the huffman codes back to its ASCII text. Through
+        multiple functions, I was able to create a function that reads in until
+        it finds a leaf node and write that character down to the outfile. This
+        algorithm was very much needed for the "unzapping" portion of the
+        project. It allows the files given to be decoded and translated into
+        understandable text. 
+    
+
+
+Testing:
+
+    For part one of the project, I tested all the functions using a unit_test.h
+    file. The file contained multiple functions testing the count_freqs
+    function. The function once it matched the demo example in the Zap spec
+    file, I was done testing with that. I made sure to match everything to the
+    Zap spec because when I initially started doing that function, the function
+    did not print out in the correct order, so after I found that out from
+    testing, I made sure to go back into my function and created a vector to
+    hold the map data in order and that helped it print the data in the correct
+    order. Afterwards I tested my serialize tree. I first initally did not know
+    there was a ZapUtil.h file, so I created a HuffmanTree by hand and then
+    tested if my function printed out the string that it was supposed to print
+    (I compared it against what the spec said it should've printed). Once it
+    matched exactly how the spec said, I was done testing the serialization
+    function. Finally, I tested the deserialization function. I had some
+    trouble with it initially because there was no index input for it, so I
+    ended up creating a helper function that took in the address to an index
+    variable which was initially set to 0. I then went through the serialized
+    string to see which nodes were leaves/internal nodes. Afterwards, tested
+    the function by using the provided ZapUtil.h file which made it super easy
+    to serialize the function then I used the ZapUtil.h's printTree function
+    which made it super easy to see the visualized version of my tree. I could
+    only compare the two trees by looking because the deserialized tree does
+    not need the frequencies in the tree nodes, so I did not have to worry
+    about it exactly matching the printed tree of the original tree. Once
+    it matched how the initial tree looked (with the exception of the freq
+    number), I was done testing all three functions.
+
+    For the second part of the project, I created all my functions in the
+    HuffmanCoder.cpp file. Afterwards, I tested them by temporarily making
+    them public and testing each function individually. I tested them in the
+    unit_tests.h file. For the most part, testing them was straightforward.
+    On top of that, I used the test files that were provided to us through
+    the pulled code (e.g. bad_zap_file). This made it useful because I didn't
+    need to create the test files myself, since they were already created for
+    us. I used the bad_zap_file to test if my program successfully throws and
+    error if the decoding ended in the middle of the tree. Afterwards I tested
+    the entire program against the_zap program and diffed them to make sure the
+    files were producing the same things. When it passed diff for the
+    ./zap zap [input] [output] command, I was done with the zapping of files
+    for this project. The unzapping of the files was a lot more
+    straightforward, however, it made it a lot harder to test the unzap
+    functions because there needed to be a zapped file. So, I ended up not
+    making separate test functions and relied on diffing and std::cout
+    statements throughout the unzap functions.
+
+    For the edge cases, I created test files on empty files and files with 
+    characters that you couldn't necessarily see (e.g '\n' or spaces). This was 
+    part of testing was a little frustrating because I thought my code would 
+    cover this case, but I ended up hard coding the edge case functions 
+    (one_node_code and one_node) for the case where there was only one node in 
+    the Huffman tree. Afterwards it worked, I made sure to diff it against 
+    the_zap test program and I was done with this certain edge case. Another 
+    couple of edge cases that I initially missed in my first submission were 
+    the main.cpp edge cases. For example, if there were more/less inputs than 
+    4. Which was an easy fix and I just tested that in terminal. I also 
+    initially forgot to test if the second input (where the command was given 
+    (e.g zap or unzap)) was valid. That was also an easy fix. I simply created 
+    an if-else loop that would read it and make sure it was zap or unzap and 
+    then cerr an error message if it wasn't either of the two commands. Another 
+    edge case I found out when testing was on an empty test file. Meaning that 
+    there was absolutely NO characters in the file at all. This when I tested 
+    it with the_zap program, I found, simply cerr an error message and then 
+    would exit out of the program. I made sure to cover this edge case in my 
+    program in my encoding function.
+
+
+Time Spent:
+
+    Part 1: 7 hours
+    Part 2: 15 hours
